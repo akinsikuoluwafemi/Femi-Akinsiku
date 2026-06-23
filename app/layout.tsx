@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Femi Akinsiku — Senior Software Engineer",
   description:
-      "Senior software engineer specializing in authentication systems, distributed infrastructure, and multi-tenant architecture. 8+ years building systems that scale.",
+    "Senior software engineer specializing in authentication systems, distributed infrastructure, and multi-tenant architecture. 8+ years building systems that scale.",
   icons: {
     icon: "/favicon.svg",
   },
@@ -24,11 +24,11 @@ export const metadata: Metadata = {
     description:
       "Senior software engineer specializing in authentication systems, distributed infrastructure, and multi-tenant architecture.",
     type: "website",
-    url: "https://femiakinsiku.com",
+    url: "https://femiakin.com",
     siteName: "Femi Akinsiku",
     images: [
       {
-        url: "/og-image.svg",
+        url: "https://femiakin.com/og-image.svg",
         width: 1200,
         height: 630,
         alt: "Femi Akinsiku — Senior Software Engineer",

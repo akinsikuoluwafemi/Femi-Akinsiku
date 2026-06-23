@@ -178,7 +178,7 @@ export default function Home() {
   // Cursor radial gradient tracking
   useEffect(() => {
     if (prefersReducedMotion()) return; // Disable for accessibility
-    
+
     const handle = (e: MouseEvent) =>
       setMousePos({ x: e.clientX, y: e.clientY });
     window.addEventListener("mousemove", handle);
@@ -421,8 +421,8 @@ export default function Home() {
             <div className="space-y-4 text-base leading-relaxed">
               <p>
                 I&apos;m a full-stack engineer with 7+ years building
-                production-scale web applications across Telco, ad-tech, SaaS, and
-                fintech. Currently at{" "}
+                production-scale web applications across Telco, ad-tech, SaaS,
+                and fintech. Currently at{" "}
                 <a
                   href="https://onpeeps.com"
                   target="_blank"
@@ -896,16 +896,6 @@ export default function Home() {
               </div>
             </section>
 
-            <div
-              className="mt-16 pt-8 border-t text-center text-xs"
-              style={{ borderColor: "var(--lightest-navy)", color: "var(--slate)" }}
-            >
-              <p>
-                Built with{" "}
-                <span style={{ color: "var(--teal)" }}>♦</span> using Next.js,
-                TypeScript & Tailwind CSS
-              </p>
-            </div>
           </footer>
         </main>
       </div>
