@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 const NAV_ITEMS = ["about", "experience", "projects"] as const;
 type NavItem = (typeof NAV_ITEMS)[number];
 
+// Check if user prefers reduced motion
+const prefersReducedMotion = () => {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+};
+
 const EXPERIENCE = [
   {
     dates: "Oct 2025 — Present",
@@ -171,6 +177,8 @@ export default function Home() {
 
   // Cursor radial gradient tracking
   useEffect(() => {
+    if (prefersReducedMotion()) return; // Disable for accessibility
+    
     const handle = (e: MouseEvent) =>
       setMousePos({ x: e.clientX, y: e.clientY });
     window.addEventListener("mousemove", handle);
@@ -413,7 +421,7 @@ export default function Home() {
             <div className="space-y-4 text-base leading-relaxed">
               <p>
                 I&apos;m a full-stack engineer with 7+ years building
-                production-scale web applications across ad-tech, SaaS, and
+                production-scale web applications across Telco, ad-tech, SaaS, and
                 fintech. Currently at{" "}
                 <a
                   href="https://onpeeps.com"
@@ -837,7 +845,68 @@ export default function Home() {
             </ol>
           </section>
 
-          <footer className="pb-16" />
+          <footer className="pb-16">
+            <section className="mt-24 mb-16">
+              <div className="text-center space-y-6">
+                <h2
+                  className="text-2xl sm:text-3xl font-bold"
+                  style={{ color: "var(--lightest-slate)" }}
+                >
+                  Let&apos;s build something great together.
+                </h2>
+                <p
+                  className="text-base leading-relaxed max-w-md mx-auto"
+                  style={{ color: "var(--slate)" }}
+                >
+                  I&apos;m always interested in hearing about new challenges and
+                  opportunities. Feel free to reach out.
+                </p>
+                <a
+                  href="mailto:akinsiku13@gmail.com"
+                  className="inline-flex items-center gap-2 px-8 py-3 rounded-full text-sm font-semibold uppercase tracking-wide border-2 transition-all"
+                  style={{
+                    borderColor: "var(--teal)",
+                    color: "var(--teal)",
+                  }}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.backgroundColor = "rgba(100,255,218,0.1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.backgroundColor = "transparent";
+                  }}
+                >
+                  Get in Touch
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+            </section>
+
+            <div
+              className="mt-16 pt-8 border-t text-center text-xs"
+              style={{ borderColor: "var(--lightest-navy)", color: "var(--slate)" }}
+            >
+              <p>
+                Built with{" "}
+                <span style={{ color: "var(--teal)" }}>♦</span> using Next.js,
+                TypeScript & Tailwind CSS
+              </p>
+            </div>
+          </footer>
         </main>
       </div>
     </div>
