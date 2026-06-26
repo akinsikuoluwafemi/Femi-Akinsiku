@@ -646,13 +646,12 @@ export default function Home() {
                   onMouseEnter={() => setHoveredProjCard(project.name)}
                   onMouseLeave={() => setHoveredProjCard(null)}
                 >
-                  <div className="flex gap-4 sm:gap-5">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:gap-5">
                     {/* Thumbnail */}
                     <div
-                      className="shrink-0 mt-1"
+                      className="w-full shrink-0 sm:mt-1 sm:w-[160px] sm:h-[105px]"
                       style={{
-                        width: 160,
-                        height: 105,
+                        aspectRatio: "16 / 10.5",
                         borderRadius: 6,
                         overflow: "hidden",
                         border: "1px solid var(--lightest-navy)",

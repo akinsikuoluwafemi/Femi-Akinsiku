@@ -75,13 +75,14 @@ function DiagramBox({
 }) {
   return (
     <div
+      className={width === 0 ? "w-full" : undefined}
       style={{
         backgroundColor: C.lightNavy,
         border: `1px solid ${accent ? C.teal : C.lightestNavy}`,
         borderRadius: 6,
         padding: "8px 14px",
         textAlign: "center",
-        minWidth: width,
+        minWidth: width === 0 ? 0 : width,
         flexShrink: 0,
       }}
     >
@@ -97,6 +98,17 @@ function DiagramBox({
       {sub && (
         <div style={{ color: C.slate, fontSize: 10, marginTop: 2 }}>{sub}</div>
       )}
+    </div>
+  );
+}
+
+function MobileArrow({ label }: { label?: string }) {
+  return (
+    <div className="flex flex-col items-center gap-1 py-1">
+      {label && <span style={{ color: C.slate, fontSize: 9 }}>{label}</span>}
+      <span style={{ color: C.lightestNavy, fontSize: 18, lineHeight: 1 }}>
+        ↓
+      </span>
     </div>
   );
 }
@@ -224,7 +236,7 @@ function SequenceStep({
 export default function VaultlyCaseStudy() {
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen overflow-x-hidden"
       style={{ backgroundColor: C.navy, color: C.slate }}
     >
       <div className="max-w-3xl mx-auto px-6 py-20 md:px-12 lg:px-6">
@@ -383,7 +395,7 @@ export default function VaultlyCaseStudy() {
 
           {/* Architecture diagram */}
           <div
-            className="rounded-lg p-6 overflow-x-auto"
+            className="rounded-lg p-4 sm:p-6"
             style={{
               backgroundColor: C.lightNavy,
               border: `1px solid ${C.lightestNavy}`,
@@ -396,54 +408,98 @@ export default function VaultlyCaseStudy() {
               System Overview
             </p>
 
-            {/* Row 1: Browser → BFF → Auth Server */}
-            <div className="flex items-center gap-0 flex-wrap mb-2">
-              <DiagramBox label="Browser" sub="Client" width={100} />
-              <Arrow label="HTTP-only cookie" />
-              <DiagramBox
-                label="Next.js BFF"
-                sub="App Router · Route Handlers"
-                accent
-                width={160}
-              />
-              <Arrow label="server-to-server" />
-              <DiagramBox
-                label="Auth Server"
-                sub="Express · Node.js"
-                accent
-                width={140}
-              />
-            </div>
-
-            {/* Row 2: BFF note */}
-            <div className="flex items-start gap-0 mt-1 mb-6 pl-[116px]">
-              <div style={{ fontSize: 10, color: C.slate, paddingLeft: 8 }}>
-                ↑ iron-session encrypted cookie · browser never sees auth-server
-                URL
-              </div>
-            </div>
-
-            {/* Row 3: Auth Server → deps */}
-            <div className="flex items-start gap-6 pl-[328px] flex-wrap">
-              <div className="flex flex-col items-center gap-1">
-                <Arrow vertical label="Drizzle ORM" />
+            <div className="sm:hidden">
+              <div className="flex flex-col items-stretch gap-1">
+                <DiagramBox label="Browser" sub="Client" width={0} />
+                <MobileArrow label="HTTP-only cookie" />
                 <DiagramBox
-                  label="PostgreSQL"
-                  sub="Users · Orgs · Tokens · Audit log"
-                  width={180}
+                  label="Next.js BFF"
+                  sub="App Router · Route Handlers"
+                  accent
+                  width={0}
+                />
+                <p className="my-2 text-center text-[10px] leading-relaxed" style={{ color: C.slate }}>
+                  iron-session encrypted cookie · browser never sees auth-server URL
+                </p>
+                <MobileArrow label="server-to-server" />
+                <DiagramBox
+                  label="Auth Server"
+                  sub="Express · Node.js"
+                  accent
+                  width={0}
                 />
               </div>
-              <div className="flex flex-col items-center gap-1">
-                <Arrow vertical label="SMTP" />
-                <DiagramBox label="Resend" sub="Org invitations" width={130} />
+
+              <div className="mt-5 grid grid-cols-1 gap-3">
+                {[
+                  {
+                    label: "PostgreSQL",
+                    sub: "Users · Orgs · Tokens · Audit log",
+                    via: "Drizzle ORM",
+                  },
+                  { label: "Resend", sub: "Org invitations", via: "SMTP" },
+                  { label: "RSA Key Pair", sub: "RS256 signing", via: "JWKS" },
+                ].map((dep) => (
+                  <div key={dep.label}>
+                    <MobileArrow label={dep.via} />
+                    <DiagramBox label={dep.label} sub={dep.sub} width={0} />
+                  </div>
+                ))}
               </div>
-              <div className="flex flex-col items-center gap-1">
-                <Arrow vertical label="JWKS" />
-                <DiagramBox
-                  label="RSA Key Pair"
-                  sub="RS256 signing"
-                  width={130}
-                />
+            </div>
+
+            <div className="hidden sm:block overflow-x-auto">
+              <div className="min-w-[680px]">
+                {/* Row 1: Browser → BFF → Auth Server */}
+                <div className="flex items-center gap-0 mb-2">
+                  <DiagramBox label="Browser" sub="Client" width={100} />
+                  <Arrow label="HTTP-only cookie" />
+                  <DiagramBox
+                    label="Next.js BFF"
+                    sub="App Router · Route Handlers"
+                    accent
+                    width={160}
+                  />
+                  <Arrow label="server-to-server" />
+                  <DiagramBox
+                    label="Auth Server"
+                    sub="Express · Node.js"
+                    accent
+                    width={140}
+                  />
+                </div>
+
+                {/* Row 2: BFF note */}
+                <div className="flex items-start gap-0 mt-1 mb-6 pl-[116px]">
+                  <div style={{ fontSize: 10, color: C.slate, paddingLeft: 8 }}>
+                    ↑ iron-session encrypted cookie · browser never sees auth-server
+                    URL
+                  </div>
+                </div>
+
+                {/* Row 3: Auth Server → deps */}
+                <div className="flex items-start gap-6 pl-[328px]">
+                  <div className="flex flex-col items-center gap-1">
+                    <Arrow vertical label="Drizzle ORM" />
+                    <DiagramBox
+                      label="PostgreSQL"
+                      sub="Users · Orgs · Tokens · Audit log"
+                      width={180}
+                    />
+                  </div>
+                  <div className="flex flex-col items-center gap-1">
+                    <Arrow vertical label="SMTP" />
+                    <DiagramBox label="Resend" sub="Org invitations" width={130} />
+                  </div>
+                  <div className="flex flex-col items-center gap-1">
+                    <Arrow vertical label="JWKS" />
+                    <DiagramBox
+                      label="RSA Key Pair"
+                      sub="RS256 signing"
+                      width={130}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -905,7 +961,7 @@ CREATE TABLE refresh_tokens (
           </SectionLabel>
 
           <div
-            className="rounded-lg p-6 mb-6"
+            className="rounded-lg p-4 sm:p-6 mb-6"
             style={{
               backgroundColor: C.lightNavy,
               border: `1px solid ${C.lightestNavy}`,
@@ -917,49 +973,82 @@ CREATE TABLE refresh_tokens (
             >
               Request Flow
             </p>
-            <div className="space-y-3">
-              {/* Browser row */}
-              <div className="flex items-center gap-3">
-                <DiagramBox label="Browser" sub="React client" width={120} />
-                <div style={{ flex: 1 }}>
-                  <div className="flex items-center gap-2">
-                    <Arrow />
-                    <span style={{ color: C.lightSlate, fontSize: 11 }}>
-                      POST /api/auth/login (same origin)
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* BFF row */}
-              <div className="flex items-center gap-3 pl-6">
+            <div className="sm:hidden">
+              <div className="flex flex-col gap-2">
+                <DiagramBox label="Browser" sub="React client" width={0} />
+                <MobileArrow label="POST /api/auth/login · same origin" />
                 <DiagramBox
                   label="Next.js Route Handler"
                   sub="/app/api/auth/login/route.ts"
                   accent
-                  width={200}
+                  width={0}
                 />
-                <div style={{ flex: 1 }}>
-                  <div className="flex items-center gap-2">
-                    <Arrow />
-                    <span style={{ color: C.lightSlate, fontSize: 11 }}>
-                      POST http://auth-server:4000/auth/login (internal)
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Auth server row */}
-              <div className="flex items-center gap-3 pl-12">
+                <MobileArrow label="POST /auth/login · internal server call" />
                 <DiagramBox
                   label="Auth Server"
                   sub="Express · port 4000"
-                  width={150}
+                  width={0}
                 />
-                <Arrow label="returns JWT" />
-                <div style={{ fontSize: 11, color: C.slate }}>
-                  BFF stores in iron-session cookie. Browser gets a session,
-                  never the JWT.
+                <MobileArrow label="returns JWT" />
+                <p
+                  className="rounded-md px-3 py-2 text-center text-[11px] leading-relaxed"
+                  style={{
+                    color: C.slate,
+                    backgroundColor: "rgba(10,25,47,0.45)",
+                    border: `1px solid ${C.lightestNavy}`,
+                  }}
+                >
+                  BFF stores it in an iron-session cookie. Browser gets a
+                  session, never the JWT.
+                </p>
+              </div>
+            </div>
+
+            <div className="hidden sm:block overflow-x-auto">
+              <div className="min-w-[620px] space-y-3">
+                {/* Browser row */}
+                <div className="flex items-center gap-3">
+                  <DiagramBox label="Browser" sub="React client" width={120} />
+                  <div style={{ flex: 1 }}>
+                    <div className="flex items-center gap-2">
+                      <Arrow />
+                      <span style={{ color: C.lightSlate, fontSize: 11 }}>
+                        POST /api/auth/login (same origin)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* BFF row */}
+                <div className="flex items-center gap-3 pl-6">
+                  <DiagramBox
+                    label="Next.js Route Handler"
+                    sub="/app/api/auth/login/route.ts"
+                    accent
+                    width={200}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div className="flex items-center gap-2">
+                      <Arrow />
+                      <span style={{ color: C.lightSlate, fontSize: 11 }}>
+                        POST http://auth-server:4000/auth/login (internal)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Auth server row */}
+                <div className="flex items-center gap-3 pl-12">
+                  <DiagramBox
+                    label="Auth Server"
+                    sub="Express · port 4000"
+                    width={150}
+                  />
+                  <Arrow label="returns JWT" />
+                  <div style={{ fontSize: 11, color: C.slate }}>
+                    BFF stores in iron-session cookie. Browser gets a session,
+                    never the JWT.
+                  </div>
                 </div>
               </div>
             </div>
@@ -1243,11 +1332,11 @@ CREATE INDEX audit_log_org_id_idx  ON audit_log(org_id,  created_at DESC);
             ].map(({ threat, mitigation }) => (
               <div
                 key={threat}
-                className="flex gap-4 p-4 rounded"
+                className="flex flex-col gap-1 p-4 rounded sm:flex-row sm:gap-4"
                 style={{ backgroundColor: C.lightNavy }}
               >
                 <span
-                  className="text-xs font-bold uppercase tracking-wide shrink-0 mt-0.5"
+                  className="text-xs font-bold uppercase tracking-wide shrink-0 sm:mt-0.5"
                   style={{ color: C.teal, minWidth: 150 }}
                 >
                   {threat}
